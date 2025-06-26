@@ -1,0 +1,26 @@
+{
+  "name": "蒋小霕的编程笔记",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [],
+  "author": "Holton_Jiang",
+  "license": "MIT",
+  "description": "蒋小霕日常学习编程",
+  "devDependencies": {
+    "vitepress": "^1.6.3",
+    "vitepress-demo-plugin": "^1.4.5",
+    "vue": "^3.5.17"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "markdown-it-mathjax3": "^4.3.2",
+    "vitepress-plugin-group-icons": "^1.6.0",
+    "xgplayer": "^3.0.22"
+  }
+}
