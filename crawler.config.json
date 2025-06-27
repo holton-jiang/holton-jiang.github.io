@@ -1,7 +1,7 @@
 
 {
-  "index_name": "holton-jiang.github.io", // 填写自己的索引名称
-  "start_urls": ["https://holton-jiang.github.io/"], // 填写自己的网站地址
+  "index_name": "holton-jiang.github.io",
+  "start_urls": ["https://holton-jiang.github.io/"],
   "rateLimit": 8,
   "maxDepth": 10,
   "selectors": {

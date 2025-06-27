@@ -21,6 +21,7 @@
     "markdown-it": "^14.1.0",
     "markdown-it-mathjax3": "^4.3.2",
     "vitepress-plugin-group-icons": "^1.6.0",
+    "vitepress-protect-plugin": "^1.0.6",
     "xgplayer": "^3.0.22"
   }
 }

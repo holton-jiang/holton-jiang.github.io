@@ -3,9 +3,14 @@ import { createRequire } from 'module'
 
 import { nav } from './configs'; //导入导航栏
 import { sidebar } from './configs'; //导入侧边栏
+
+import vitepressProtectPlugin from "vitepress-protect-plugin";//禁用F12
+
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin'; 
-//代码组图标
-import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons';
+
+import { groupIconMdPlugin, groupIconVitePlugin, localIconLoader } from 'vitepress-plugin-group-icons'; //自定义代码组图标
+
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'; //代码组图标
 
 
 export default defineConfig({
@@ -25,6 +30,7 @@ export default defineConfig({
   //页面底部显示文档贡献者列表
   contributors: true,
 
+  //markdown配置
   markdown: {
 		math: true,
 		lineNumbers: true,
@@ -36,58 +42,69 @@ export default defineConfig({
 			infoLabel: '信息',
 			detailsLabel: '详情内容',
 		},
+
 	config(md) { 
 	      md.use(vitepressDemoPlugin); // 代码组中添加图片
 	      md.use((md) => {
-	      md.use(groupIconMdPlugin)// 代码组中添加图片
+
+		//组件插入h1标题下
+		md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
+		let htmlResult = slf.renderToken(tokens, idx, options);
+		if (tokens[idx].tag === 'h1') htmlResult += `<ArticleMetadata />`; 
+		return htmlResult;
+		} //字数及阅读时间
+
+	      md.use(groupIconMdPlugin) //代码组图标
+
+	      // 代码组中添加图片
 	      const defaultRender = md.render
 	      md.render = (...args) => {
 	      const [content, env] = args
 	      const currentLang = env?.localeIndex || 'root'
-	      const isHomePage = env?.path === '/' || env?.relativePath === 'index.md'  // 判断是否是首页
+	      const isHomePage = env?.path === '/' || env?.relativePath === 'index.md' // 判断是否是首页
 
-	if (isHomePage) {
-            return defaultRender.apply(md, args) // 如果是首页，直接渲染内容
-          }
-          // 调用原始渲染
-          let defaultContent = defaultRender.apply(md, args)
-          // 替换内容
-          if (currentLang === 'root') {
-            defaultContent = defaultContent.replace(/提醒/g, '提醒')
-              .replace(/建议/g, '建议')
-              .replace(/重要/g, '重要')
-              .replace(/警告/g, '警告')
-              .replace(/注意/g, '注意')
-          } else if (currentLang === 'en') {
-            // 英文替换
-            defaultContent = defaultContent.replace(/提醒/g, 'remind')
-              .replace(/建议/g, 'suggestion')
-              .replace(/重要/g, 'important')
-              .replace(/警告/g, 'warning')
-              .replace(/注意/g, 'attention')
-          }
-          // 返回渲染的内容
-          return defaultContent
-        }
+	      if (isHomePage) {
+	        return defaultRender.apply(md, args) // 如果是首页，直接渲染内容
+	      }
+	      // 调用原始渲染
+	      let defaultContent = defaultRender.apply(md, args)
+	      // 替换内容
+	      if (currentLang === 'root') {
+	        defaultContent = defaultContent.replace(/提醒/g, '提醒')
+	          .replace(/建议/g, '建议')
+	          .replace(/重要/g, '重要')
+	          .replace(/警告/g, '警告')
+	          .replace(/注意/g, '注意')
+		} else if (currentLang === 'en') {
+		// 英文替换
+		 defaultContent = defaultContent.replace(/提醒/g, 'remind')
+	          .replace(/建议/g, 'suggestion')
+	          .replace(/重要/g, 'important')
+	          .replace(/警告/g, 'warning')
+	          .replace(/注意/g, 'attention')
+		}
+		// 返回渲染的内容
+		return defaultContent
+		}
 
-        // 获取原始的 fence 渲染规则
-        const defaultFence = md.renderer.rules.fence?.bind(md.renderer.rules) ?? ((...args) => args[0][args[1]].content);
+		// 获取原始的 fence 渲染规则
+		const defaultFence = md.renderer.rules.fence?.bind(md.renderer.rules) ?? ((...args) => args[0][args[1]].content);
 
-        // 重写 fence 渲染规则
-        md.renderer.rules.fence = (tokens, idx, options, env, self) => {
-          const token = tokens[idx];
-          const info = token.info.trim();
+		// 重写 fence 渲染规则
+		md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+		  const token = tokens[idx];
+		  const info = token.info.trim();
 
-          // 判断是否为 md:img 类型的代码块
-          if (info.includes('md:img')) {
-            // 只渲染图片，不再渲染为代码块
-            return `<div class="rendered-md">${md.render(token.content)}</div>`;
-          }
+		// 判断是否为 md:img 类型的代码块
+		if (info.includes('md:img')) {
+		  // 只渲染图片，不再渲染为代码块
+		  return `<div class="rendered-md">${md.render(token.content)}</div>`;
+		}
 
-          // 其他代码块按默认规则渲染（如 java, js 等）
-          return defaultFence(tokens, idx, options, env, self);
-        };
-      })
+		// 其他代码块按默认规则渲染（如 java, js 等）
+		return defaultFence(tokens, idx, options, env, self);
+	      };
+	   }) //代码组中添加图片语句结束
 
 	    }, 
 	image: {
@@ -95,6 +112,7 @@ export default defineConfig({
 		lazyLoading: true
 		},
   	},//markdown代码结束
+
 
         // 404 page
         notFound: {
@@ -105,10 +123,35 @@ export default defineConfig({
 		linkText: '带我回首页'
         },
 
+
         vite: { 
 	plugins: [
-	groupIconVitePlugin() ],//代码组图标
-		},
+
+	//禁用F12
+	vitepressProtectPlugin({
+        disableF12: true, // 禁用F12开发者模式
+        //disableCopy: true, //禁用文本复制
+        //disableSelect: true, //禁用文本选择
+      }),
+
+	groupIconVitePlugin({ 
+	//自定义代码组图标
+        customIcon: {
+          ts: localIconLoader(import.meta.url, '../public/typescript.svg'), //本地ts图标导入
+          git: localIconLoader(import.meta.url, '../public/git.svg'),
+          cc: localIconLoader(import.meta.url, '../public/terminal.svg'),
+          gcc: localIconLoader(import.meta.url, '../public/terminal.svg'),
+          clang: localIconLoader(import.meta.url, '../public/terminal.svg'),
+          bash: localIconLoader(import.meta.url, '../public/gnubash.svg'),
+	  python: localIconLoader(import.meta.url, '../public/python.svg'),
+          js: 'logos:javascript', //js图标
+          md: 'logos:markdown', //markdown图标
+          css: 'logos:css-3', //css图标
+           },
+      	})//代码组图标
+
+		 ],//plugins语句结束
+	},//vite语句结束
 
 
   themeConfig: {
@@ -125,7 +168,7 @@ export default defineConfig({
     outlineTitle: '本页的章节',
     // 显示层级
     outline: { level: 'deep', label: '本页的章节' },
-    // aside: false,
+    //aside: false,
     //outline: false,
     siteTitle: '蒋小霕的编程笔记',
 
