@@ -37,4 +37,13 @@ export const sidebar: DefaultTheme.Config['sidebar'] = [
         ],
       },
 
+      //HTTP 权威指南
+      {
+        text: 'HTTP 权威指南',
+        collapsed: true,
+        items: [
+          { text: '1-1', link: '/HTTP/1-1' },
+        ],
+      },
+
 ]

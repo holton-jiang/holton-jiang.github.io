@@ -142,6 +142,7 @@ export default defineConfig({
           cc: localIconLoader(import.meta.url, '../public/terminal.svg'),
           gcc: localIconLoader(import.meta.url, '../public/terminal.svg'),
           clang: localIconLoader(import.meta.url, '../public/terminal.svg'),
+          sh: localIconLoader(import.meta.url, '../public/term.svg'),
           bash: localIconLoader(import.meta.url, '../public/gnubash.svg'),
 	  python: localIconLoader(import.meta.url, '../public/python.svg'),
           js: 'logos:javascript', //js图标

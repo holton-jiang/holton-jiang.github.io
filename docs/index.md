@@ -15,6 +15,9 @@ hero:
     - theme: brand
       text: Java 2D 游戏编程入门
       link: /fundamental-2d-game-programming-with-java/ch01/1-1
+    - theme: brand
+      text: HTTP 权威指南
+      link: /HTTP/1-1
     - theme: alt
       text: 好物分享
       link: https://docs.qq.com/sheet/DQVNpUVFMeW56U3JK?scene=67bac4d10ad095a9b618e290PXNXu1&tab=BB08J2
