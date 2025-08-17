@@ -1,19 +1,3 @@
----
-
-layout: doc
-editLink: false
-aside: false
-lastUpdated: true
-date: 2025-8-17 18:09
-
----
-
-# 代码示例
-### 1-1 
-
-[[toc]]
-
-```c
 #include <stdio.h>
 char get_choice(void);
 char get_first(void);
@@ -184,18 +168,3 @@ void count(void)
     printf("\t每个月应发到手工资累计为:\033[0m\033[1;31m %.2f 元。 \033[0m\n\n\n", all_total);
 
 }
-
-```
-
-::: code-group
-
-```shell [clang]
-clang 法定工资计算器.c -o 法定工资计算器
-```
-
-```md:img [Terminal 控制台]
-![](./screenshot-1-1.jpeg)
-```
-:::
-
-下载源代码代码：![法定工资计算器](./法定工资计算器.c)
