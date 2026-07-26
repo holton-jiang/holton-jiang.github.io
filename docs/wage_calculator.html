@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工资计算器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 0%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4776E6, #4776E6);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #4776E6;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(to right, #4776E6, #4776E6);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #4776E6;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
+        }
+        
+        .highlight {
+            color: #8E54E9;
+            font-weight: bold;
+        }
+        
+        .extra-info {
+            background-color: #e6f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            border-left: 4px solid #4776E6;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 8px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            .calculator {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>工资计算器</h1>
+            <p class="subtitle">根据工作日、周末加班和节假日计算您的工资</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-group">
+                <label for="wage">约定每月工资（元）“输入最低工资标准得出最少加班费”:</label>
+                <input type="number" id="wage" step="0.01" placeholder="例如：8000.00">
+            </div>
+            
+            <div class="input-group">
+                <label for="fiveone">个人缴纳的五险一金金额（元）:</label>
+                <input type="number" id="fiveone" step="0.01" placeholder="例如：1500.00">
+            </div>
+            
+            <div class="input-group">
+                <label for="weekday_hours">工作日工作小时数:</label>
+                <input type="number" id="weekday_hours" step="0.5" placeholder="例如：176">
+                <p class="note">工作日工资分为两部分：174小时以内为正常工资，超出部分为加班工资</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="weekend_hours">周末加班小时数:</label>
+                <input type="number" id="weekend_hours" step="0.5" placeholder="例如：10">
+            </div>
+            
+            <div class="input-group">
+                <label for="holiday_hours">法定节假日加班小时数:</label>
+                <input type="number" id="holiday_hours" step="0.5" placeholder="例如：8">
+            </div>
+            
+            <button onclick="calculateSalary()">计算工资</button>
+            
+            <div class="results" id="results">
+                <div class="result-item">
+                    <div class="result-title">日薪：</div>
+                    <div class="result-value" id="dailyWage">-</div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="result-item">
+                    <div class="result-title">正常工作时间工资（174小时）:</div>
+                    <div class="result-value" id="normalWage">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">工作日加班工资（超出174小时部分）:</div>
+                    <div class="result-value" id="overtimeWage">-</div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="result-item">
+                    <div class="result-title">周末加班工资：</div>
+                    <div class="result-value" id="weekendWage">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">法定节假日加班工资：</div>
+                    <div class="result-value" id="holidayWage">-</div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="result-item">
+                    <div class="result-title">当月应发到手工资：</div>
+                    <div class="result-value" id="totalWage">-</div>
+                </div>
+                
+                <div class="extra-info">
+                    <strong>工资计算说明：</strong>
+                    <p>正常工作时间：174小时（21.75天×8小时）</p>
+                    <p>工作日加班：超出174小时的部分，按1.5倍计算</p>
+                    <p>周末加班：按2倍计算</p>
+                    <p>法定节假日加班：按3倍计算</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateSalary() {
+            // 获取输入值
+            const wage = parseFloat(document.getElementById('wage').value);
+            const fiveone = parseFloat(document.getElementById('fiveone').value);
+            const weekday_hours = parseFloat(document.getElementById('weekday_hours').value);
+            const weekend_hours = parseFloat(document.getElementById('weekend_hours').value);
+            const holiday_hours = parseFloat(document.getElementById('holiday_hours').value);
+            
+            // 验证输入
+            if (isNaN(wage) || isNaN(fiveone) || isNaN(weekday_hours) || isNaN(weekend_hours) || isNaN(holiday_hours)) {
+                alert('请输入有效的数字！');
+                return;
+            }
+            
+            // 计算日薪（基于标准工作月21.75天）
+            const daily_wage = wage / 21.75;
+            
+            // 计算每小时工资
+            const hourly_wage = daily_wage / 8;
+            
+            // 计算正常工作时间（174小时）的工资
+            const normal_hours = Math.min(weekday_hours, 174);
+            const normal_wage = normal_hours * hourly_wage;
+            
+            // 计算加班工资（超出174小时的部分）
+            const overtime_hours = Math.max(weekday_hours - 174, 0);
+            const overtime_wage = overtime_hours * hourly_wage * 1.5;
+            
+            // 计算周末加班工资（双倍）
+            const weekend_wage = hourly_wage * 2 * weekend_hours;
+            
+            // 计算法定节假日加班工资（三倍）
+            const holiday_wage = hourly_wage * 3 * holiday_hours;
+            
+            // 计算总工资（减去五险一金）
+            const month_total = normal_wage + overtime_wage + weekend_wage + holiday_wage - fiveone;
+            
+            // 显示结果
+            document.getElementById('dailyWage').textContent = `约定每月工资${wage.toFixed(2)} ÷ 21.75 = ${daily_wage.toFixed(2)} 元`;
+            document.getElementById('normalWage').textContent = `小时工资${hourly_wage.toFixed(2)}元 × ${normal_hours}小时 = ${normal_wage.toFixed(2)} 元`;
+            document.getElementById('overtimeWage').textContent = `超出174小时的部分：${overtime_hours}小时 × ${hourly_wage.toFixed(2)}元 × 1.5倍 = ${overtime_wage.toFixed(2)} 元`;
+            document.getElementById('weekendWage').textContent = `小时工资${hourly_wage.toFixed(2)}元 × 2倍 × ${weekend_hours}小时 = ${weekend_wage.toFixed(2)} 元`;
+            document.getElementById('holidayWage').textContent = `小时工资${hourly_wage.toFixed(2)}元 × 3倍 × ${holiday_hours}小时 = ${holiday_wage.toFixed(2)} 元`;
+            document.getElementById('totalWage').textContent = `正常工作时间工资${normal_wage.toFixed(2)} + 工作日加班工资${overtime_wage.toFixed(2)} + 周末加班工资${weekend_wage.toFixed(2)} + 法定节假日加班工资${holiday_wage.toFixed(2)} - 个人缴纳的五险一金金额${fiveone.toFixed(2)}元 = ${month_total.toFixed(2)} 元`;
+            
+            // 显示结果区域
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
