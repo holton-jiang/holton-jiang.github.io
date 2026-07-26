@@ -8,7 +8,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = [
         collapsed: true,
         items: [
             { text: '1-1', link: '/c-primer-plus-5th-edition/ch01/1-1' },
-//          { text: '1-1', link: '/c-primer-plus-5th-edition/ch02/1-1' },
+            { text: '1-2', link: '/c-primer-plus-5th-edition/ch01/1-2' },
 //          { text: '1-1', link: '/c-primer-plus-5th-edition/ch03/1-1' },
 //          { text: '1-1', link: '/c-primer-plus-5th-edition/ch04/1-1' },
 //          { text: '1-1', link: '/c-primer-plus-5th-edition/ch05/1-1' },
